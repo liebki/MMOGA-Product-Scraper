@@ -2,9 +2,12 @@
 {
     public class Product
     {
-        public Product(string productType, string link, string title, string price, bool isPriceReduced, string reducedPrice, string platformLogo, string deliveryTime, string availability, string region, string platform, string description, bool isPaypalAvailable)
+        public Product(bool isNotAvailable, string shopCategory, string cover, ProductType type, string link, string title, string price, bool isPriceReduced, string reducedPrice, string platformLogo, string deliveryTime, string availability, string region, string platform, string description, string extendedDescription, bool isPaypalAvailable)
         {
-            ProductType = productType;
+            IsNotAvailable = isNotAvailable;
+            ShopCategory = shopCategory;
+            Cover = cover;
+            Type = type;
             Link = link;
             Title = title;
             Price = price;
@@ -16,10 +19,14 @@
             Region = region;
             Platform = platform;
             Description = description;
+            ExtendedDescription = extendedDescription;
             IsPaypalAvailable = isPaypalAvailable;
         }
 
-        public string ProductType { get; set; }
+        public bool IsNotAvailable { get; set; }
+        public string ShopCategory { get; set; }
+        public string Cover { get; set; }
+        public ProductType Type { get; set; }
         public string Link { get; set; }
         public string Title { get; set; }
         public string Price { get; set; }
@@ -31,11 +38,12 @@
         public string Region { get; set; }
         public string Platform { get; set; }
         public string Description { get; set; }
+        public string ExtendedDescription { get; set; }
         public bool IsPaypalAvailable { get; set; }
 
         public override string ToString()
         {
-            return $"{{{nameof(ProductType)}={ProductType}, {nameof(Link)}={Link}, {nameof(Title)}={Title}, {nameof(Price)}={Price}, {nameof(IsPriceReduced)}={IsPriceReduced.ToString()}, {nameof(ReducedPrice)}={ReducedPrice}, {nameof(PlatformLogo)}={PlatformLogo}, {nameof(DeliveryTime)}={DeliveryTime}, {nameof(Availability)}={Availability}, {nameof(Region)}={Region}, {nameof(Platform)}={Platform}, {nameof(Description)}={Description}, {nameof(IsPaypalAvailable)}={IsPaypalAvailable.ToString()}}}";
+            return $"{{{nameof(IsNotAvailable)}={IsNotAvailable.ToString()}, {nameof(ShopCategory)}={ShopCategory}, {nameof(Cover)}={Cover}, {nameof(Type)}={Type.ToString()}, {nameof(Link)}={Link}, {nameof(Title)}={Title}, {nameof(Price)}={Price}, {nameof(IsPriceReduced)}={IsPriceReduced.ToString()}, {nameof(ReducedPrice)}={ReducedPrice}, {nameof(PlatformLogo)}={PlatformLogo}, {nameof(DeliveryTime)}={DeliveryTime}, {nameof(Availability)}={Availability}, {nameof(Region)}={Region}, {nameof(Platform)}={Platform}, {nameof(Description)}={Description}, {nameof(ExtendedDescription)}={ExtendedDescription}, {nameof(IsPaypalAvailable)}={IsPaypalAvailable.ToString()}}}";
         }
     }
 }
