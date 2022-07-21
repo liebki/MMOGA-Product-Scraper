@@ -16,10 +16,10 @@ namespace MMOGAScraper
 
         public static void Main()
         {
-            GetPriceOfGame("FIFA");
+            GetPriceOfGame("cyberpunk");
         }
 
-        private static void GetProductType(string v)
+        private static Product GetProductType(string v)
         {
             HttpClient client = new();
             client.DefaultRequestHeaders.UserAgent.ParseAdd(Useragent);
@@ -36,6 +36,7 @@ namespace MMOGAScraper
                 bool IsDlc = false;
                 bool IsGiftcard = false;
                 bool IsRandomObject = false;
+                bool IsConsoleGame = false;
 
                 HtmlDocument doc = new();
                 doc.LoadHtml(result);
@@ -63,6 +64,10 @@ namespace MMOGAScraper
                     {
                         IsRandomObject = true;
                     }
+                    if (ProductTitle.Contains("xbox", StringComparison.OrdinalIgnoreCase) || v.Contains("xbox", StringComparison.OrdinalIgnoreCase) || ProductDescription.ToString().Contains("xbox", StringComparison.OrdinalIgnoreCase) || ProductTitle.Contains("PS4") || ProductTitle.Contains("PS5") || v.Contains("Playstation-Network", StringComparison.OrdinalIgnoreCase) || ProductDescription.ToString().Contains("Playstation", StringComparison.OrdinalIgnoreCase) || ProductTitle.Contains("Nintendo Switch Download Code", StringComparison.OrdinalIgnoreCase) || v.Contains("Nintendo-Switch-Download-Code", StringComparison.OrdinalIgnoreCase))
+                    {
+                        IsConsoleGame = true;
+                    }
 
                     string ProductType;
                     if (doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[5]/ul/li[2]/p") != null && !IsDlc && !IsGiftcard && !IsRandomObject)
@@ -81,17 +86,66 @@ namespace MMOGAScraper
                     {
                         ProductType = "Random Key or Item";
                     }
+                    else if (IsConsoleGame)
+                    {
+                        ProductType = "Console";
+                    }
                     else
                     {
                         ProductType = "No Game, DLC, GiftCard or Random Object!";
                     }
-                    Console.WriteLine($"Product: {ProductTitle} Producttype: {ProductType}");
+
+                    HtmlNode Price = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[3]/div[2]/div[3]/div[2]/p");
+                    bool PriceReduced = false;
+                    string ReducedPrice = String.Empty;
+                    if (doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[3]/div[2]/div[3]/div[2]/del") != null)
+                    {
+                        PriceReduced = true;
+                        ReducedPrice = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[3]/div[2]/div[3]/div[2]/del").InnerHtml;
+                    }
+
+                    string PlatformLogoSource = String.Empty;
+                    if (doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[3]/div[2]/div[1]/img") != null)
+                    {
+                        HtmlNode PlatformLogo = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[3]/div[2]/div[1]/img");
+                        PlatformLogoSource = MmogaGermany + PlatformLogo.SelectSingleNode("//img").Attributes["src"].Value;
+                    }
+
+                    HtmlNode InfoDetailTableBlock = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[3]/div[2]/div[2]/div");
+
+                    List<string> InfoDetails = new();
+                    foreach (HtmlNode row in InfoDetailTableBlock.SelectNodes("//tr"))
+                    {
+                        foreach (HtmlNode cell in row.SelectNodes("//td"))
+                        {
+                            InfoDetails.Add(cell.InnerText);
+                        }
+                    }
+
+                    string DeliveryTime = InfoDetails[0];
+                    string Availability = InfoDetails[1];
+                    string Region = InfoDetails[2];
+                    string Platform = InfoDetails[3];
+
+                    HtmlNode Description = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[5]/ul/li[1]/div");
+                    string DescriptionText = GetContentInTags(Description.InnerHtml);
+                    DescriptionText = DescriptionText.Replace("(?:\\s)\\s", " ");
+
+                    bool IsPaypalAvailable = false;
+                    if (doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[3]/div[2]/div[3]/div[1]/div") != null)
+                    {
+                        IsPaypalAvailable = true;
+                    }
+
+                    Product product = new(ProductType, v, ProductTitle, Price.InnerHtml, PriceReduced, ReducedPrice, PlatformLogoSource, DeliveryTime, Availability, Region, Platform, DescriptionText, IsPaypalAvailable);
+                    return product;
                 }
                 else
                 {
                     Console.WriteLine("Skip more custom pages");
                 }
             }
+            return null;
         }
 
         private static string GetContentInTags(string html)
@@ -131,11 +185,17 @@ namespace MMOGAScraper
                     }
                 }
             }
-            Console.WriteLine($"{urlListe.Count} Ergebnisse\n");
+            List<Product> ProductList = new();
+            Console.WriteLine($"{urlListe.Count} entries found\n");
             for (int i = 0; i < urlListe.Count; i++)
             {
-                GetProductType(urlListe[i]);
+                Product prod = GetProductType(urlListe[i]);
+                if (prod != null)
+                {
+                    ProductList.Add(prod);
+                }
             }
+            Console.WriteLine($"{ProductList.Count} entries in product list!\n");
         }
     }
 }

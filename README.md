@@ -1,4 +1,4 @@
-# MMOGA-PS - MMOGA Product Scraper
+# MMOGA-PS - MMOGA Product Scraper (API)
 
 ##### Projekt von https://github.com/liebki
 
@@ -14,8 +14,12 @@ A scraper to get all products including their (possible) data from https://mmoga
 
 ## Features
 
+### What data is available right now?
+- Following data is available: 
+	- product type, link of product, title, price, is the price reduced, the reduced price, platform-logo, delivery time, availability, region, platform, description, is paypal available 
+
 ### General
-- Get a "Product" object, it may be a game, DLC, giftcard or a random item/key
+- Get a "Product" object, it may be a game, console game, DLC, giftcard or a random item/key
 
 ## Usage
 
@@ -48,7 +52,7 @@ I'm trying my best, to make this a good scraper/api to allow us to scrape produc
 
 ## Roadmap
 
-- Make this thing an API
-- More clean and robust code
+- Make this thing a real API
+- Clean up the code and split it in methods etc.
 - Cover many types of products
 - Learn more about parsing HTML etc. using HtmlAgilityPack
