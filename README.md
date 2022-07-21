@@ -96,8 +96,11 @@ Right now in July of 2022, this tool is working pretty good
 
 ## Roadmap
 
-- Make this thing a real API
-- Clean up the code and split it in methods etc.
-- Learn more about parsing HTML etc. using HtmlAgilityPack
+#### Important
+- Make this thing a real API with many methods etc.
 - Include more pages than just the first page of the search
 - Support the most types of products
+
+#### Second choice
+- Clean up the code and split it in methods etc.
+- Learn more about parsing HTML etc. using HtmlAgilityPack
