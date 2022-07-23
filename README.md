@@ -51,7 +51,8 @@ List<Product> ProductList = MmogaScraper.DeeperSearch("what you need");
 Please take a look in the *Program.cs*, the code there is showing a working example for scraping "fifa", using Quick- and DeeperSearch.
 
 ### Output
-![Logo](https://iili.io/NDfhHF.png)
+GIF shows content of "cyberpunk" scraping:
+![Logo](https://iili.io/ksX3Vp.gif)
 
 ## FAQ
 
@@ -80,6 +81,7 @@ Right now in end of July '22, this tool is working pretty good
 ## Roadmap
 
 #### Sorted by importancy
+- Error management if nothing is found!
 - Include more pages than just the first page of the search
 - Support more types of products
 - Clean up the code and split it in methods etc.
