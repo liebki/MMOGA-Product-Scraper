@@ -2,7 +2,7 @@
 
 #### Projekt von https://github.com/liebki
 
-A scraper to get all products including the (possible) data of https://mmoga.de
+A scraper to get products including the (possible) data of https://mmoga.de
 
 ## Technologies
 
@@ -15,57 +15,40 @@ A scraper to get all products including the (possible) data of https://mmoga.de
 ## Features
 
 ### What data is available right now?
-- Following data is available for the product objects: 
-	- Is the product not available?, Category (steam game, ea game etc.), Cover image, Type of product, Product link, Title, Price, Is the price reduced, Reduced price, Platform logo image, Delivery time, Availability, Region, Platform, Description, Extended description, Is paypal available
+- To see what data is available, please take a look in the Product.cs and/or LightProduct.cs 
 
 ### General
-- Get a list of product objects, those can be used to get prices, availabilities etc.
-- Some products like accounts that are sold on mmoga or fifa points etc. are on my TO-DO but are not high priority
-- Example for the type of product that this tool wont support for a bit: [Minecraft Unique Account](https://www.mmoga.de/Minecraft/Minecraft-Unique-Account,Minecraft-Java-Edition-MOJANG-LOG-IN-MAIL-ACCESS--NO-BAN-Hypixel--Fast-delivery/)
+- Get a list of product objects, those can be used to get prices, availabilities, platforms etc.
+- Some products wont be found using the DeeperSearch, because atm I didn't include a way to parse them
+- To get **every** (possible made) product, use the QuickSearch but you will loose detail
+- I will include every product in the DeeperSearch but it is one of my things on the TO-DO so you have to wait
 
 ## Usage
 
 ### Code/Methods to use
 
-The MmogaScraper contains the GetListOfProducts method, this is the only available method right now to get the products, more is on it's way!
+The MmogaScraper class contains a "QuickSearch" and a "DeeperSearch" method.
+QuickSearch will provide you faster results but with fewer detail, it will miss following data of the DeeperSearch:
+	Type
+	Platform/Logo
+	Delivery time
+	Region
+	Description
+	Extended description
+	Paypal availability
+	
+Because of this there is a LightProduct (QuickSearch) and a Product (DeeperSearch).
 
 ```
-List<Product> FoundProducts = MmogaScraper.GetListOfProducts("What you desire");
+List<LightProduct> LighProductList = MmogaScraper.QuickSearch("what you want");
+
+List<Product> ProductList = MmogaScraper.DeeperSearch("what you need");
 ```
 
 ## Example
 
-### Code (Is in Program.cs too)
-```
-string query = "minecraft"; //What to search for on mmoga.de?
-
-List<Product> FoundProducts = MmogaScraper.GetListOfProducts(query);
-Console.WriteLine($"I found {FoundProducts.Count} good products for {query}");
-foreach (Product product in FoundProducts)
-{
-    Console.WriteLine("----------------------------------");
-    string ProductData = $" \nCategory: {product.ShopCategory} \nAvailability: {product.Availability}";
-    if (product.IsNotAvailable)
-    {
-        ProductData += "\nPrice: /";
-    }
-    else
-    {
-        ProductData += $"\nPrice/Reduced price: {product.Price}/{product.ReducedPrice}";
-    }
-    if (product.Type == ProductType.Game)
-    {
-        ProductData = $"Game: {product.Title}" + ProductData;
-    }
-    else
-    {
-        ProductData = $"Product: {product.Title}" + ProductData;
-    }
-    Console.WriteLine(ProductData);
-    Console.WriteLine("----------------------------------");
-    Console.WriteLine(Environment.NewLine);
-}
-```
+### Code (Program.cs)
+Please take a look in the *Program.cs*, the code there is showing a working example for scraping "fifa", using Quick- and DeeperSearch.
 
 ### Output
 ![Logo](https://iili.io/NDfhHF.png)
@@ -74,15 +57,15 @@ foreach (Product product in FoundProducts)
 
 #### Does this work on every mmoga page?
 
-I created this for mmoga.DE I don't know about mmoga.com or other regions in general.
+I created this for mmoga.**DE** I don't know about mmoga.com or other regions in general
 
 #### Why can't I obtain data X?
 
 I'm trying my best, so please be patient or include the things you like to see yourself or contact me :)
 
-#### Why isn't this tool working?
+####Is it working?
 
-Right now in July of 2022, this tool is working pretty good
+Right now in end of July '22, this tool is working pretty good
 
 ## License
 
@@ -96,11 +79,8 @@ Right now in July of 2022, this tool is working pretty good
 
 ## Roadmap
 
-#### Important
-- Make this thing a real API with many methods etc.
+#### Sorted by importancy
 - Include more pages than just the first page of the search
-- Support the most types of products
-
-#### Second choice
+- Support more types of products
 - Clean up the code and split it in methods etc.
-- Learn more about parsing HTML etc. using HtmlAgilityPack
+- Learn more about parsing websites etc. using HtmlAgilityPack
