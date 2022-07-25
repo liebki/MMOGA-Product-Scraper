@@ -105,7 +105,7 @@ namespace MMOGAScraper
                     }
                     else
                     {
-                        Type = ProductType.Unknown;
+                        Type = ProductType.Error;
                     }
 
                     #endregion Product type selection
@@ -187,14 +187,27 @@ namespace MMOGAScraper
                         }
                     }
 
-                    string DeliveryTime = InfoDetails[0];
-                    string Availability = InfoDetails[1];
-                    string Region = InfoDetails[2];
-                    string Platform = InfoDetails[3];
-
                     HtmlNode Description = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[5]/ul/li[1]/div");
                     string DescriptionText = StripHtmlTags(Description.InnerHtml);
                     DescriptionText = WhitespaceNewLineRemover(DescriptionText);
+
+                    DateTime CustomDeliveryTime;
+                    ProductDeliveryTime DeliveryTime;
+                    Tuple<ProductDeliveryTime, DateTime> DeliveryData = GetDeliveryTime(InfoDetails[0]);
+                    if (DeliveryData.Item1 == ProductDeliveryTime.CustomDate)
+                    {
+                        DeliveryTime = DeliveryData.Item1;
+                        CustomDeliveryTime = DeliveryData.Item2;
+                    }
+                    else
+                    {
+                        DeliveryTime = DeliveryData.Item1;
+                        CustomDeliveryTime = new();
+                    }
+
+                    ProductAvailability Availability = GetAvailability(InfoDetails[1]);
+                    string Region = InfoDetails[2];
+                    string Platform = InfoDetails[3];
 
                     #endregion Detailed product description
 
@@ -210,7 +223,7 @@ namespace MMOGAScraper
 
                     #region Product object
 
-                    Product product = new(IsGameNotAvailable, ShopCategory, CoverImage, Type, ProductLink, ProductTitle, ReturnDecimalValue(Price), PriceReduced, ReturnDecimalValue(ReducedPrice), PlatformLogoSource, DeliveryTime, Availability, Region, Platform, ProductDescription, DescriptionText, IsPaypalAvailable);
+                    Product product = new(IsGameNotAvailable, ShopCategory, CoverImage, Type, ProductLink, ProductTitle, ReturnDecimalValue(Price), PriceReduced, ReturnDecimalValue(ReducedPrice), PlatformLogoSource, DeliveryTime, CustomDeliveryTime, Availability, Region, Platform, ProductDescription, DescriptionText, IsPaypalAvailable);
 
                     #endregion Product object
 
@@ -218,6 +231,57 @@ namespace MMOGAScraper
                 }
             }
             return null;
+        }
+
+        private static ProductAvailability GetAvailability(string input)
+        {
+            if (String.Equals(input, "nicht lieferbar", StringComparison.OrdinalIgnoreCase))
+            {
+                return ProductAvailability.Undeliverable;
+            }
+            else if (String.Equals(input, "lieferbar", StringComparison.OrdinalIgnoreCase))
+            {
+                return ProductAvailability.Deliverable;
+            }
+            else if (String.Equals(input, "Vorbestellbar", StringComparison.OrdinalIgnoreCase))
+            {
+                return ProductAvailability.Preorder;
+            }
+            else
+            {
+                return ProductAvailability.Error;
+            }
+        }
+
+        private static Tuple<ProductDeliveryTime, DateTime> GetDeliveryTime(string input)
+        {
+            if (String.Equals(input, "5-10 Minuten", StringComparison.OrdinalIgnoreCase))
+            {
+                return new(ProductDeliveryTime.FiveToTenMinutes, new());
+            }
+            else if (String.Equals(input, "3-4 Tage", StringComparison.OrdinalIgnoreCase))
+            {
+                return new(ProductDeliveryTime.ThreeToFourDays, new());
+            }
+            else if (String.Equals(input, "Derzeit nicht lieferbar", StringComparison.OrdinalIgnoreCase))
+            {
+                return new(ProductDeliveryTime.Undeliverable, new());
+            }
+            else if (String.Equals(input, "Lieferzeit unbekannt", StringComparison.OrdinalIgnoreCase))
+            {
+                return new(ProductDeliveryTime.Unknown, new());
+            }
+            else
+            {
+                if (DateTime.TryParse(input, out DateTime customDate))
+                {
+                    return new(ProductDeliveryTime.CustomDate, customDate);
+                }
+                else
+                {
+                    return new(ProductDeliveryTime.Unknown, new());
+                }
+            }
         }
 
         private static string WhitespaceNewLineRemover(string input)
@@ -245,6 +309,30 @@ namespace MMOGAScraper
             {
                 return 0;
             }
+        }
+
+        internal static void CheckQueryLength(string query)
+        {
+            if (query.Length < 3)
+            {
+                Exception ShortQuery = new("The given query string has to be at least three characters long to search!");
+                throw ShortQuery;
+            }
+        }
+
+        internal static string QueryLinkGetResult(string query, HttpClient client)
+        {
+            client.DefaultRequestHeaders.UserAgent.ParseAdd(ScraperMethods.Useragent);
+            string result = String.Empty;
+            using (HttpResponseMessage response = client.GetAsync(ScraperMethods.MmogaSearchBase + query).Result)
+            {
+                using (HttpContent content = response.Content)
+                {
+                    result = content.ReadAsStringAsync().Result;
+                }
+            }
+
+            return result;
         }
 
         internal static LightProduct ParseProductListItem(int ProductCount, HtmlNode ProductNode)

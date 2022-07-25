@@ -11,9 +11,16 @@
 
             Console.WriteLine("Quick search:");
             List<LightProduct> LighProductList = MmogaScraper.QuickSearch(querystring);
-            foreach (LightProduct product in LighProductList)
+            if (LighProductList.Count > 0)
             {
-                PrintLightProduct(product);
+                foreach (LightProduct product in LighProductList)
+                {
+                    PrintLightProduct(product);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No data found for query {querystring}");
             }
 
             #endregion Quick search example
@@ -24,9 +31,16 @@
 
             Console.WriteLine("Deeper search:");
             List<Product> ProductList = MmogaScraper.DeeperSearch(querystring);
-            foreach (Product product in ProductList)
+            if (ProductList.Count > 0)
             {
-                PrintProduct(product);
+                foreach (Product product in ProductList)
+                {
+                    PrintProduct(product);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No data found for query {querystring}");
             }
 
             #endregion Deeper search example
@@ -55,6 +69,14 @@
                 ProductData = $"Product: {product.Title}" + ProductData;
             }
             Console.WriteLine(ProductData);
+            if (product.DeliveryTime == ProductDeliveryTime.CustomDate)
+            {
+                Console.WriteLine($"Delivery time: {product.DeliveryTimeCustomDate}");
+            }
+            else
+            {
+                Console.WriteLine($"Delivery time: {product.DeliveryTime}");
+            }
             Console.WriteLine($"Paypal available: {product.IsPaypalAvailable}");
             Console.WriteLine($"Region: {product.Region}");
             Console.WriteLine($"Platform: {product.Platform}");

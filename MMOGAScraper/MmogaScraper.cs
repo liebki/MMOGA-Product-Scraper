@@ -4,22 +4,23 @@ namespace MMOGAScraper
 {
     public static class MmogaScraper
     {
-        public static List<Product> DeeperSearch(string query)
+        public static List<Product> DeeperSearch(string query, int maxpages = 1)
         {
-            if (query.Length < 3)
-            {
-                ThrowTooShortError();
-            }
+            ScraperMethods.CheckQueryLength(query);
             List<Product> ProductList = new();
             List<string> urlListe = new();
 
             using (HttpClient client = new())
             {
-                string result = QueryLinkGetResult(query, client);
+                string result = ScraperMethods.QueryLinkGetResult(query, client);
                 if (!object.Equals(result, null))
                 {
                     HtmlDocument doc = new();
                     doc.LoadHtml(result);
+                    if (doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/form/div[1]/div/span")?.InnerText.Contains("keine Ergebnisse") == true)
+                    {
+                        return ProductList;
+                    }
                     int a = 0;
                     foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//div[@class='searchCont']"))
                     {
@@ -43,27 +44,22 @@ namespace MMOGAScraper
             return ProductList;
         }
 
-        private static void ThrowTooShortError()
+        public static List<LightProduct> QuickSearch(string query, int maxpages = 1)
         {
-            Exception ShortQuery = new("The given query string has to be at least three characters long to search!");
-            throw ShortQuery;
-        }
-
-        public static List<LightProduct> QuickSearch(string query)
-        {
-            if (query.Length < 3)
-            {
-                ThrowTooShortError();
-            }
+            ScraperMethods.CheckQueryLength(query);
             List<LightProduct> LightProductList = new();
 
             using (HttpClient client = new())
             {
-                string result = QueryLinkGetResult(query, client);
+                string result = ScraperMethods.QueryLinkGetResult(query, client);
                 if (!object.Equals(result, null))
                 {
                     HtmlDocument doc = new();
                     doc.LoadHtml(result);
+                    if (doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/form/div[1]/div/span")?.InnerText.Contains("keine Ergebnisse") == true)
+                    {
+                        return LightProductList;
+                    }
                     int a = 0;
                     foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//div[@class='searchCont']"))
                     {
@@ -73,21 +69,6 @@ namespace MMOGAScraper
                 }
             }
             return LightProductList;
-        }
-
-        private static string QueryLinkGetResult(string query, HttpClient client)
-        {
-            client.DefaultRequestHeaders.UserAgent.ParseAdd(ScraperMethods.Useragent);
-            string result = String.Empty;
-            using (HttpResponseMessage response = client.GetAsync(ScraperMethods.MmogaSearchBase + query).Result)
-            {
-                using (HttpContent content = response.Content)
-                {
-                    result = content.ReadAsStringAsync().Result;
-                }
-            }
-
-            return result;
         }
     }
 }
