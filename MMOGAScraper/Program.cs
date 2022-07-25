@@ -5,7 +5,17 @@
         public static void Main()
         {
             const string querystring = "fifa"; //What to search for on mmoga.de
-            Console.WriteLine($"Searching for {querystring} keyword");
+            Console.WriteLine($"Querying: {querystring}");
+
+            #region Page number example
+
+            Console.WriteLine("Page number search:");
+            int QueryPagenumber = MmogaScraper.PagenumberSearch(querystring);
+            Console.WriteLine($"Number of pages: {QueryPagenumber} for: {querystring}");
+
+            #endregion Page number example
+
+            Console.WriteLine(Environment.NewLine);
 
             #region Quick search example
 

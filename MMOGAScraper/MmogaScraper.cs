@@ -4,6 +4,34 @@ namespace MMOGAScraper
 {
     public static class MmogaScraper
     {
+        public static List<object> GetSoonReleasedProducts()
+        {
+            // I am implementing more and more :)
+            return new();
+        }
+
+        public static int PagenumberSearch(string query)
+        {
+            ScraperMethods.CheckQueryLength(query);
+
+            int pages = 0;
+            using (HttpClient client = new())
+            {
+                string result = ScraperMethods.QueryLinkGetResult(query, client);
+                if (!object.Equals(result, null))
+                {
+                    HtmlDocument doc = new();
+                    doc.LoadHtml(result);
+                    if (doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/form/div[1]/div/span")?.InnerText.Contains("keine Ergebnisse") == true)
+                    {
+                        return pages;
+                    }
+                    pages = ScraperMethods.CalculateQueryPageNumber(doc);
+                }
+            }
+            return pages;
+        }
+
         public static List<Product> DeeperSearch(string query, int maxpages = 1)
         {
             ScraperMethods.CheckQueryLength(query);
@@ -22,6 +50,9 @@ namespace MMOGAScraper
                         return ProductList;
                     }
                     int a = 0;
+
+                    int MaxPagesForProduct = ScraperMethods.CalculateQueryPageNumber(doc);
+
                     foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//div[@class='searchCont']"))
                     {
                         a++;

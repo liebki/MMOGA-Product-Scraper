@@ -233,6 +233,25 @@ namespace MMOGAScraper
             return null;
         }
 
+        internal static int CalculateQueryPageNumber(HtmlDocument doc)
+        {
+            int MaxPagesForProduct = 1;
+            if (doc.DocumentNode.SelectSingleNode("//span[@class='num']") != null)
+            {
+                string ParsePagesData = doc.DocumentNode.SelectSingleNode("//span[@class='num']").InnerHtml;
+                string key = String.Empty;
+                Match match = Regex.Match(ParsePagesData, @"(?!\/+)[0-9]+", RegexOptions.RightToLeft);
+                if (match.Success)
+                {
+                    key = match.Value;
+                }
+
+                int.TryParse(key, out MaxPagesForProduct);
+            }
+
+            return MaxPagesForProduct;
+        }
+
         private static ProductAvailability GetAvailability(string input)
         {
             if (String.Equals(input, "nicht lieferbar", StringComparison.OrdinalIgnoreCase))

@@ -40,8 +40,13 @@ QuickSearch will provide you faster results but with fewer detail, it will miss 
 Because of this there is a LightProduct (QuickSearch) and a Product (DeeperSearch).
 
 ```
+//Get the number of pages a query produces
+int QueryPagenumber = MmogaScraper.PagenumberSearch("what I got");
+
+//Get a list of products, faster but with fewer data/details
 List<LightProduct> LighProductList = MmogaScraper.QuickSearch("what you want");
 
+//Get all the data, using the slower search
 List<Product> ProductList = MmogaScraper.DeeperSearch("what you need");
 ```
 
@@ -64,7 +69,7 @@ I created this for mmoga.**DE** I don't know about mmoga.com or other regions in
 
 I'm trying my best, so please be patient or include the things you like to see yourself or contact me :)
 
-####Is it working?
+#### Is it working?
 
 Right now in end of July '22, this tool is working pretty good
 
@@ -81,8 +86,6 @@ Right now in end of July '22, this tool is working pretty good
 ## Roadmap
 
 #### Sorted by importancy
-- Error management if nothing is found!
-- Include more pages than just the first page of the search
+- Include more pages than just the first page of the search (WIP, 50% done)
 - Support more types of products
-- Clean up the code and split it in methods etc.
 - Learn more about parsing websites etc. using HtmlAgilityPack
