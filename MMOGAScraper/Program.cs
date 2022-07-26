@@ -4,13 +4,16 @@
     {
         public static void Main()
         {
+            MmogaScraper scraper = new(ScraperRegion.DE);
+
             const string querystring = "fifa"; //What to search for on mmoga.de
-            Console.WriteLine($"Querying: {querystring}");
+            const int pages = 8;
+            Console.WriteLine($"Querying: {querystring} for {pages} pages");
 
             #region Page number example
 
             Console.WriteLine("Page number search:");
-            int QueryPagenumber = MmogaScraper.PagenumberSearch(querystring);
+            int QueryPagenumber = scraper.PagenumberSearch(querystring);
             Console.WriteLine($"Number of pages: {QueryPagenumber} for: {querystring}");
 
             #endregion Page number example
@@ -20,7 +23,7 @@
             #region Quick search example
 
             Console.WriteLine("Quick search:");
-            List<LightProduct> LighProductList = MmogaScraper.QuickSearch(querystring);
+            List<LightProduct> LighProductList = scraper.QuickSearch(querystring);
             if (LighProductList.Count > 0)
             {
                 foreach (LightProduct product in LighProductList)
@@ -40,7 +43,7 @@
             #region Deeper search example
 
             Console.WriteLine("Deeper search:");
-            List<Product> ProductList = MmogaScraper.DeeperSearch(querystring);
+            List<Product> ProductList = scraper.DeeperSearch_Alpha(querystring, pages);
             if (ProductList.Count > 0)
             {
                 foreach (Product product in ProductList)

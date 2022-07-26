@@ -9,7 +9,7 @@ namespace MMOGAScraper
         #region Contants
 
         internal const string Useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0";
-        internal const string MmogaSearchBase = "https://www.mmoga.de/advanced_search.php?keywords=";
+        internal const string MmogaSearchBase = "https://www.mmoga.de/advanced_search.php";
         internal const string MmogaGermany = "https://www.mmoga.de";
 
         #endregion Contants
@@ -339,18 +339,21 @@ namespace MMOGAScraper
             }
         }
 
-        internal static string QueryLinkGetResult(string query, HttpClient client)
+        internal static string QueryLinkGetResult(string query, HttpClient client, int page = 1)
         {
+            if (page < 1)
+            {
+                page = 1;
+            }
             client.DefaultRequestHeaders.UserAgent.ParseAdd(ScraperMethods.Useragent);
             string result = String.Empty;
-            using (HttpResponseMessage response = client.GetAsync(ScraperMethods.MmogaSearchBase + query).Result)
+            using (HttpResponseMessage response = client.GetAsync(ScraperMethods.MmogaSearchBase + $"?page={page}&keywords={query}").Result)
             {
                 using (HttpContent content = response.Content)
                 {
                     result = content.ReadAsStringAsync().Result;
                 }
             }
-
             return result;
         }
 

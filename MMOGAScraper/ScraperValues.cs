@@ -27,4 +27,11 @@
         Undeliverable = 4,
         Unknown = 5,
     }
+
+    public enum ScraperRegion
+    {
+        DE = 0,
+        US = 1,
+        UK = 2,
+    }
 }

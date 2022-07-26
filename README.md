@@ -48,6 +48,10 @@ List<LightProduct> LighProductList = MmogaScraper.QuickSearch("what you want");
 
 //Get all the data, using the slower search
 List<Product> ProductList = MmogaScraper.DeeperSearch("what you need");
+
+//This version of DeeperSearch is not 100% finished, tho it is working!
+//Get all the data, using the slower search AND search on more than just the first page
+List<Product> ProductListAlpha = MmogaScraper.DeeperSearch_Alpha("search them good", pages_as_int);
 ```
 
 ## Example
@@ -87,5 +91,18 @@ Right now in end of July '22, this tool is working pretty good
 
 #### Sorted by importancy
 - Include more pages than just the first page of the search (WIP, 50% done)
+- Option to change region of mmoga
+- Parse "coming soon" products
+- Parse "hits" products
+- Parse "preorder" products
+- Parse the payment methods
 - Support more types of products
 - Learn more about parsing websites etc. using HtmlAgilityPack
+
+## DISCLAIMER SECTION
+
+#### [Read the full disclaimer in the DISCLAIMER.md file!](https://github.com/liebki/MMOGA-Product-Scraper/blob/master/DISCLAIMER.md)
+
+**liebki (me) or this project** isn’t endorsed by MMOGA/WEIT and doesn’t reflect the 
+views or opinions of MMOGA/WEIT or anyone officially involved in managing it.
+MMOGA is a trademark and/or registered trademark of "WEIT".
