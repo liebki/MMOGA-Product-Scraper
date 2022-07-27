@@ -82,9 +82,11 @@ namespace MMOGAScraper
                         IsConsoleGame = true;
                     }
 
+                    Requirements requirements = new(false, "", "", true, "");
                     ProductType Type;
                     if (doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[5]/ul/li[2]/p") != null && !IsDlc && !IsGiftcard && !IsRandomObject)
                     {
+                        requirements = ParseRequirementsNode(doc, requirements);
                         Type = ProductType.Game;
                     }
                     else if (IsDlc)
@@ -223,7 +225,7 @@ namespace MMOGAScraper
 
                     #region Product object
 
-                    Product product = new(IsGameNotAvailable, ShopCategory, CoverImage, Type, ProductLink, ProductTitle, ReturnDecimalValue(Price), PriceReduced, ReturnDecimalValue(ReducedPrice), PlatformLogoSource, DeliveryTime, CustomDeliveryTime, Availability, Region, Platform, ProductDescription, DescriptionText, IsPaypalAvailable);
+                    Product product = new(IsGameNotAvailable, ShopCategory, CoverImage, Type, ProductLink, ProductTitle, ReturnDecimalValue(Price), PriceReduced, ReturnDecimalValue(ReducedPrice), PlatformLogoSource, DeliveryTime, CustomDeliveryTime, Availability, Region, Platform, ProductDescription, DescriptionText, requirements, IsPaypalAvailable);
 
                     #endregion Product object
 
@@ -231,6 +233,37 @@ namespace MMOGAScraper
                 }
             }
             return null;
+        }
+
+        private static Requirements ParseRequirementsNode(HtmlDocument doc, Requirements requirements)
+        {
+            HtmlNode RequirementsData = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[5]/ul/li[2]/div/p[2]");
+            string RequirementsText = WhitespaceNewLineRemover(RequirementsData.InnerText);
+            if (RequirementsText.Contains("Minimum") && RequirementsText.Contains("Empfohlen"))
+            {
+                string[] RequirementsTextParsed = RequirementsText.Split("Empfohlen");
+                string RequirementsMinimum = RequirementsTextParsed[0].Split("Minimum")[1];
+                string RequirementsMaximum = RequirementsTextParsed[1];
+                RequirementsMinimum = FilterRequirementsData(RequirementsMinimum, false);
+                RequirementsMaximum = FilterRequirementsData(RequirementsMaximum, false);
+                requirements = new(true, RequirementsMinimum, RequirementsMaximum, false, "");
+            }
+            else
+            {
+                requirements.Text = FilterRequirementsData(RequirementsText, true);
+            }
+
+            return requirements;
+        }
+
+        private static string FilterRequirementsData(string input, bool small)
+        {
+            if (small)
+            {
+                input = input.Replace("Betriebssystem:", " Betriebssystem:");
+            }
+            input = input.Replace("Prozessor:", " Prozessor:").Replace("Arbeitsspeicher:", " Arbeitsspeicher:").Replace("Grafikkarte:", " Grafikkarte:").Replace("Speicherplatz:", " Speicherplatz:").Replace("Breitband", " Breitband");
+            return input;
         }
 
         internal static int CalculateQueryPageNumber(HtmlDocument doc)

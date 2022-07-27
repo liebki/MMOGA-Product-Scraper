@@ -2,7 +2,7 @@
 {
     public class Product
     {
-        public Product(bool isNotAvailable, string shopCategory, string cover, ProductType type, string link, string title, decimal price, bool isPriceReduced, decimal reducedPrice, string platformLogo, ProductDeliveryTime deliveryTime, DateTime deliveryTimeCustomDate, ProductAvailability availability, string region, string platform, string description, string extendedDescription, bool isPaypalAvailable)
+        public Product(bool isNotAvailable, string shopCategory, string cover, ProductType type, string link, string title, decimal price, bool isPriceReduced, decimal reducedPrice, string platformLogo, ProductDeliveryTime deliveryTime, DateTime deliveryTimeCustomDate, ProductAvailability availability, string region, string platform, string description, string extendedDescription, Requirements systemRequirements, bool isPaypalAvailable)
         {
             IsNotAvailable = isNotAvailable;
             ShopCategory = shopCategory;
@@ -21,6 +21,7 @@
             Platform = platform;
             Description = description;
             ExtendedDescription = extendedDescription;
+            SystemRequirements = systemRequirements;
             IsPaypalAvailable = isPaypalAvailable;
         }
 
@@ -41,6 +42,7 @@
         public string Platform { get; set; }
         public string Description { get; set; }
         public string ExtendedDescription { get; set; }
+        public Requirements SystemRequirements { get; set; }
         public bool IsPaypalAvailable { get; set; }
     }
 }

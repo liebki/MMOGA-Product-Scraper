@@ -7,7 +7,7 @@
             MmogaScraper scraper = new(ScraperRegion.DE);
 
             const string querystring = "fifa"; //What to search for on mmoga.de
-            const int pages = 8;
+            const int pages = 2;//What number of pages to search for on mmoga.de
             Console.WriteLine($"Querying: {querystring} for {pages} pages");
 
             #region Page number example
@@ -89,6 +89,18 @@
             else
             {
                 Console.WriteLine($"Delivery time: {product.DeliveryTime}");
+            }
+            if (product.SystemRequirements.Available)
+            {
+                if (product.SystemRequirements.Uncomplete)
+                {
+                    Console.WriteLine($"Requirements: {product.SystemRequirements.Text}");
+                }
+                else
+                {
+                    Console.WriteLine($"Requirements (minimum): {product.SystemRequirements.Minimum}");
+                    Console.WriteLine($"Requirements (maximum): {product.SystemRequirements.Maximum}");
+                }
             }
             Console.WriteLine($"Paypal available: {product.IsPaypalAvailable}");
             Console.WriteLine($"Region: {product.Region}");

@@ -1,45 +1,52 @@
-# MMOGA Product Scraper - MMOGA-PS (API)
+# MMOGA Product Scraper (API)
 
-#### Projekt von https://github.com/liebki
+##### Projekt von https://github.com/liebki
 
-A scraper to get products including the (possible) data of https://mmoga.de
+## Introduction
+
+### Why does this exist?
+
+I originally needed a way to parse prices for games, for [BlazorLibrary](https://github.com/liebki/BlazorLibrary), now I created this and I might implement it in some time.
+
+### General
+
+So this tool/api, is scraper to get products (and their data) of https://mmoga.de (And soon all other regions like US, UK etc.)
 
 ## Technologies
 
 ### Created using
 - .NET Core 6.0
 
-### Nuget(s)
-- HtmlAgilityPack
+### Nugets/Dependencies
+- [HtmlAgilityPack](https://www.nuget.org/packages/HtmlAgilityPack/)
 
 ## Features
 
 ### What data is available right now?
-- To see what data is available, please take a look in the Product.cs and/or LightProduct.cs 
+
+To see what data is available, please take a look in the [LightProduct](https://github.com/liebki/MMOGA-Product-Scraper/blob/master/MMOGAScraper/LightProduct.cs)/[Product](https://github.com/liebki/MMOGA-Product-Scraper/blob/master/MMOGAScraper/Product.cs).cs classes 
 
 ### General
-- Get a list of product objects, those can be used to get prices, availabilities, platforms etc.
-- Some products wont be found using the DeeperSearch, because atm I didn't include a way to parse them
-- To get **every** (possible made) product, use the QuickSearch but you will loose detail
-- I will include every product in the DeeperSearch but it is one of my things on the TO-DO so you have to wait
+
+Get a ```List<LightProduct>``` or ```List<Product>```, the objects inside of the lists (depending on the object), contain data like availabilities, prices and much more.
+
+#### Information
+
+Some products wont be parsed by the "DeeperSearch", to get **every** (parseable) product, use the "QuickSearch" (you will loose some data, compare the LightProduct and Product to know which).
+Im working on including every product for the "DeeperSearch" but it is one of my things on the TO-DO so you have to wait
 
 ## Usage
 
 ### Code/Methods to use
 
-The MmogaScraper class contains a "QuickSearch" and a "DeeperSearch" method.
-QuickSearch will provide you faster results but with fewer detail, it will miss following data of the DeeperSearch:
-	Type
-	Platform/Logo
-	Delivery time
-	Region
-	Description
-	Extended description
-	Paypal availability
-	
-Because of this there is a LightProduct (QuickSearch) and a Product (DeeperSearch).
+The MmogaScraper class contains a "QuickSearch", "DeeperSearch", "PagenumberSearch" and "DeeperSearch_Alpha" method.
+- QuickSearch: Provides you with faster results but with fewer detail
+- DeeperSearch: Provides you with the complete data but it is slower
+- PagenumberSearch: Provides you with the number of pages a query gives back
+- DeeperSearch_Alpha: Provides you with the complete data but it is slower and you can select the number of pages you want to have the data of
 
 ```
+
 //Get the number of pages a query produces
 int QueryPagenumber = MmogaScraper.PagenumberSearch("what I got");
 
@@ -52,22 +59,26 @@ List<Product> ProductList = MmogaScraper.DeeperSearch("what you need");
 //This version of DeeperSearch is not 100% finished, tho it is working!
 //Get all the data, using the slower search AND search on more than just the first page
 List<Product> ProductListAlpha = MmogaScraper.DeeperSearch_Alpha("search them good", pages_as_int);
+
 ```
 
 ## Example
 
-### Code (Program.cs)
-Please take a look in the *Program.cs*, the code there is showing a working example for scraping "fifa", using Quick- and DeeperSearch.
+### Code
+
+Please take a look in the *[Program.cs](https://github.com/liebki/MMOGA-Product-Scraper/blob/master/MMOGAScraper/Program.cs)*, the code there is showing a working example for scraping "fifa", using 
+"QuickSearch", "DeeperSearch_Alpha" and "PagenumberSearch".
 
 ### Output
+
 GIF shows content of "cyberpunk" scraping:
 ![Logo](https://iili.io/ksX3Vp.gif)
 
 ## FAQ
 
-#### Does this work on every mmoga page?
+#### Does this work on every mmoga region?
 
-I created this for mmoga.**DE** I don't know about mmoga.com or other regions in general
+I created this explicitly for mmoga.(DE) I don't know about mmoga.com or other regions in general, but I am working on including them.
 
 #### Why can't I obtain data X?
 
@@ -75,7 +86,7 @@ I'm trying my best, so please be patient or include the things you like to see y
 
 #### Is it working?
 
-Right now in end of July '22, this tool is working pretty good
+Right now in end of July '22, this tool is working pretty nice!
 
 ## License
 
@@ -90,8 +101,10 @@ Right now in end of July '22, this tool is working pretty good
 ## Roadmap
 
 #### Sorted by importancy
-- Include more pages than just the first page of the search (WIP, 50% done)
-- Option to change region of mmoga
+- Include more pages than just the first page of the search (Almost done, WIP)
+- Option to change region of mmoga (WIP)
+- Create more objects for things, like payment ways etc.
+- Parse similar products on a products site
 - Parse "coming soon" products
 - Parse "hits" products
 - Parse "preorder" products
