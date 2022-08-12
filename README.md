@@ -1,4 +1,4 @@
-# MMOGA Product Scraper (API)
+# MMOGANet (Scraper for mmoga)
 
 ##### Projekt von https://github.com/liebki
 

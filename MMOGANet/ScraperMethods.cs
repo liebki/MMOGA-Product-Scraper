@@ -262,8 +262,7 @@ namespace MMOGAScraper
             {
                 input = input.Replace("Betriebssystem:", " Betriebssystem:");
             }
-            input = input.Replace("Prozessor:", " Prozessor:").Replace("Arbeitsspeicher:", " Arbeitsspeicher:").Replace("Grafikkarte:", " Grafikkarte:").Replace("Speicherplatz:", " Speicherplatz:").Replace("Breitband", " Breitband");
-            return input;
+            return input.Replace("Prozessor:", " Prozessor:").Replace("Arbeitsspeicher:", " Arbeitsspeicher:").Replace("Grafikkarte:", " Grafikkarte:").Replace("Speicherplatz:", " Speicherplatz:").Replace("Breitband", " Breitband");
         }
 
         internal static int CalculateQueryPageNumber(HtmlDocument doc)
