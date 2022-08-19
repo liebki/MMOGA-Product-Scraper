@@ -6,6 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <StartupObject>MMOGANetDemo.Program</StartupObject>
+	<Title>MMOGANetDemo</Title>
+	<Authors>liebki</Authors>
+	<Copyright>liebki</Copyright>
+	<PackageProjectUrl>https://github.com/liebki/MMOGANet</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/liebki/MMOGANet</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
